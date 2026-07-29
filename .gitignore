@@ -1,4 +1,8 @@
-boot.bin
+build/
+*.o
+*.bin
+*.img
 .DS_Store
 .idea/
-*.img
+cmake-build-*/
+
