@@ -1,5 +1,5 @@
 run: boot.bin
 	qemu-system-x86_64 -drive format=raw,file=boot.bin
 
-boot.bin: boot.asm
+boot.bin: boot/boot.asm
 	nasm -f bin boot.asm -o boot.bin
