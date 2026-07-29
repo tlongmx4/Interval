@@ -2,7 +2,6 @@
 bits 16
 
 stage2_start:
-
     xor ax, ax
     mov ds, ax
     mov es, ax
@@ -12,13 +11,34 @@ stage2_start:
     mov sp, 0x7C00
     cld
 
+    mov [boot_drive], dl
+
     mov si, msg_stage2
     call print_string
+
+    ; ---- load kernel to 0x10000 ----
+    mov ah, 0x02
+    mov al, 16              ; 16 sectors
+    mov ch, 0
+    mov cl, 10              ; kernel starts at sector 10
+    mov dh, 0
+    mov dl, [boot_drive]
+
+    mov bx, 0x1000
+    mov es, bx
+    xor bx, bx              ; es:bx = 0x1000:0000 = 0x10000
+
+    int 0x13
+    jc disk_error
+
+    xor ax, ax
+    mov es, ax              ; put es back to 0
 
     cli
 
     in al, 0x92
     or al, 2
+    and al, 0xFE
     out 0x92, al
 
     lgdt [gdt_descriptor]
@@ -28,6 +48,12 @@ stage2_start:
     mov cr0, eax
 
     jmp CODE_SEG:protected_start
+
+disk_error:
+    mov si, msg_disk_error
+    call print_string
+    cli
+    hlt
 
 print_string:
 .loop:
@@ -52,21 +78,8 @@ protected_start:
 
     mov esp, 0x90000
 
-    mov esi, msg_protected
-    mov edi, 0xB8000
-    mov ah, 0x0F
+    jmp 0x10000
 
-.pm_print_loop:
-    lodsb
-    or al, al
-    jz .halt
-    mov [edi], ax
-    add edi, 2
-    jmp .pm_print_loop
-
-.halt:
-    hlt
-    jmp .halt
 
 align 4
 gdt_start:
@@ -99,7 +112,6 @@ gdt_descriptor:
 CODE_SEG equ gdt_code - gdt_start
 DATA_SEG equ gdt_data - gdt_start
 
-msg_stage2    db "Successfully loaded Stage 2!", 0x0D, 0x0A, 0
-msg_protected db "Successfully running in 32-bit Protected Mode!", 0
-
-times 4096-($-$$) db 0
+boot_drive     db 0
+msg_stage2     db "Successfully loaded Stage 2!", 0x0D, 0x0A, 0
+msg_disk_error db "Kernel load failed!", 0x0D, 0x0A, 0
