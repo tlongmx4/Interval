@@ -4,4 +4,4 @@ A small x86 kernel written from scratch. Bootloader, protected mode, and everyth
 
 ![Interval booting](docs/boot.png)
 
-**Status:** boots and prints a string. Next up: reading more sectors off disk.
+**Status:** two-stage boot — the boot sector reads stage 2 off disk and jumps to it. Next up: protected mode and the handoff to C++.
