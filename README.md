@@ -1,6 +1,6 @@
 # Interval
 
-A small x86 kernel written from scratch, aimed at running relativity calculations with nothing underneath it.
+A small x86 kernel written from scratch. Bootloader, protected mode, and everything above it.
 
 ![Interval booting](docs/boot.png)
 
