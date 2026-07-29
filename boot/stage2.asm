@@ -79,7 +79,6 @@ protected_start:
 
     jmp 0x10000
 
-
 align 4
 gdt_start:
 
