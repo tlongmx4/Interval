@@ -66,7 +66,6 @@ print_string:
 .done:
     ret
 
-
 bits 32
 protected_start:
     mov ax, DATA_SEG
