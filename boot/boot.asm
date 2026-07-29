@@ -1,25 +1,31 @@
 [org 0x7c00]
 
-	xor ax, ax
-	mov ds, ax
-	mov es, ax
-	cld
+        mov [boot_drive], dl
+        xor ax, ax
+        mov ds, ax
+        mov es, ax
+        cld
 
-	mov si, message
+        mov ah, 02h
+        mov al, 1
+        mov ch, 0
+        mov cl, 2
+        mov dh, 0
+        mov dl, [boot_drive]
+        mov bx, 7E00h
 
-print_loop:
-	lodsb
-	test al, al
-	je done
+        int 13h
+        jc read_error
 
-	mov ah, 0x0e
-	int 0x10
-	jmp print_loop
+        jmp 0x7E00
 
-done:
-	jmp $
+read_error:
+        mov ah, 0x0e
+        mov al, 'E'
+        int 0x10
+        jmp $
 
-message: db 'Hello', 0
+boot_drive: db 0
 
 times 510-($-$$) db 0
 dw 0xaa55
