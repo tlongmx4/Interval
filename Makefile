@@ -1,3 +1,5 @@
+.DEFAULT_GOAL := disk.img
+
 CXX      := i686-elf-g++
 LD       := i686-elf-ld
 CXXFLAGS := -ffreestanding -fno-exceptions -fno-rtti -Wall -Wextra -Iinclude
@@ -5,7 +7,9 @@ CXXFLAGS := -ffreestanding -fno-exceptions -fno-rtti -Wall -Wextra -Iinclude
 SRCS := $(shell find kernel -name '*.cpp')
 OBJS := $(SRCS:.cpp=.o)
 
-.PHONY: run term debug clean
+.PHONY: all run term debug clean
+
+all: disk.img
 
 run: disk.img
 	./run.sh
