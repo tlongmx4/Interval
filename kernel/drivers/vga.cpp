@@ -32,7 +32,11 @@ void terminal_scroll() {
 }
 
 void terminal_newline() {
-   // come back to tomorrow
+   terminal_column = 0;
+    if (++terminal_row >= VGA_HEIGHT) {
+        terminal_row = VGA_HEIGHT - 1;
+        terminal_scroll();
+    }
 }
 
 void terminal_initialize() {
