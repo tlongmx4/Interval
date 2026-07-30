@@ -4,7 +4,7 @@ A small x86 kernel written from scratch. Bootloader, protected mode, and everyth
 
 ![Interval booting](docs/boot.png)
 
-** What works
+## What works
 
 - **Stage 1 bootloader** (512 bytes) -- saves the BIOS boot drive, reads stage 2
     off disk with `int 13h`, hands off to it
