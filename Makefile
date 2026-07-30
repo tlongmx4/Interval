@@ -5,10 +5,16 @@ CXXFLAGS := -ffreestanding -fno-exceptions -fno-rtti -Wall -Wextra -Iinclude
 SRCS := $(shell find kernel -name '*.cpp')
 OBJS := $(SRCS:.cpp=.o)
 
-.PHONY: run clean
+.PHONY: run term debug clean
 
 run: disk.img
-	qemu-system-x86_64 -drive format=raw,file=disk.img
+	./run.sh
+
+term: disk.img
+	./run.sh curses
+
+debug: disk.img
+	./run.sh debug
 
 disk.img: boot.bin stage2.bin kernel.bin
 	dd if=/dev/zero  of=disk.img bs=512 count=64 2>/dev/null
@@ -33,6 +39,3 @@ kernel.bin: kernel/entry.o $(OBJS) linker.ld
 
 clean:
 	rm -f boot.bin stage2.bin kernel.bin disk.img $(OBJS) kernel/entry.o
-
-term: disk.img
-	qemu-system-x86_64 -drive format=raw,file=disk.img -display curses
