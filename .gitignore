@@ -5,4 +5,5 @@ build/
 .DS_Store
 .idea/
 cmake-build-*/
+TODO.md
 
