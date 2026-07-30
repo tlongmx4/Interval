@@ -23,6 +23,18 @@ static size_t terminal_column;
 static uint8_t terminal_color;
 static uint16_t* terminal_buffer = (uint16_t*)VGA_MEMORY;
 
+void terminal_scroll() {
+    for (int i = 0; i < VGA_HEIGHT; i++) {
+        for (int m = 0; m < VGA_WIDTH; m++) {
+            terminal_buffer[i * VGA_WIDTH + m] = terminal_buffer[(i + 1) * VGA_WIDTH + m];
+        }
+    }
+}
+
+void terminal_newline() {
+   // come back to tomorrow
+}
+
 void terminal_initialize() {
     terminal_row = 0;
     terminal_column = 0;
@@ -45,7 +57,7 @@ static void terminal_putentryat(char c, uint8_t color, size_t x, size_t y) {
     terminal_buffer[index] = vga_entry(c, color);
 }
 
-void terminal_putchar(char c) {
+void terminal_putchar(char c) { // include \r \t \b
     if (c == '\n') {
         terminal_column = 0;
         if (++terminal_row == VGA_HEIGHT)
