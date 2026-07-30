@@ -33,3 +33,6 @@ kernel.bin: kernel/entry.o $(OBJS) linker.ld
 
 clean:
 	rm -f boot.bin stage2.bin kernel.bin disk.img $(OBJS) kernel/entry.o
+
+term: disk.img
+	qemu-system-x86_64 -drive format=raw,file=disk.img -display curses
