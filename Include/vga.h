@@ -25,7 +25,7 @@ static inline uint8_t vga_entry_color(vga_color fg, vga_color bg) {
     return fg | bg << 4;
 }
 
-void terminal_initialize(void);
+void terminal_initialize();
 void terminal_setcolor(uint8_t color);
 void terminal_putchar(char c);
 void terminal_write(const char* data, size_t size);
