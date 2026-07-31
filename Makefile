@@ -4,8 +4,10 @@ CXX      := i686-elf-g++
 LD       := i686-elf-ld
 CXXFLAGS := -ffreestanding -fno-exceptions -fno-rtti -O2 -Wall -Wextra -Iinclude
 
-SRCS := $(shell find kernel -name '*.cpp')
-OBJS := $(SRCS:.cpp=.o)
+SRCS     := $(shell find kernel -name '*.cpp')
+OBJS     := $(SRCS:.cpp=.o)
+ASM_SRCS := $(filter-out kernel/entry.asm,$(shell find kernel -name '*.asm'))
+ASM_OBJS := $(ASM_SRCS:.asm=.o)
 
 .PHONY: all run term debug clean
 
@@ -32,14 +34,14 @@ boot.bin: boot/boot.asm
 stage2.bin: boot/stage2.asm
 	nasm -f bin $< -o $@
 
-kernel/entry.o: kernel/entry.asm
+%.o: %.asm
 	nasm -f elf32 $< -o $@
 
 %.o: %.cpp
 	$(CXX) $(CXXFLAGS) -c $< -o $@
 
-kernel.bin: kernel/entry.o $(OBJS) linker.ld
-	$(LD) -T linker.ld --oformat binary -o $@ kernel/entry.o $(OBJS)
+kernel.bin: kernel/entry.o $(ASM_OBJS) $(OBJS) linker.ld
+	$(LD) -T linker.ld --oformat binary -o $@ kernel/entry.o $(ASM_OBJS) $(OBJS)
 
 clean:
-	rm -f boot.bin stage2.bin kernel.bin disk.img $(OBJS) kernel/entry.o
+	rm -f boot.bin stage2.bin kernel.bin disk.img $(OBJS) $(ASM_OBJS) kernel/entry.o
