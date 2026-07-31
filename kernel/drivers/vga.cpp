@@ -1,5 +1,6 @@
 #include "vga.h"
 #include "string.h"
+#include "io.h"
 #include <stdbool.h>
 #include <stddef.h>
 #include <stdint.h>
@@ -16,6 +17,20 @@ static size_t terminal_row;
 static size_t terminal_column;
 static uint8_t terminal_color;
 static volatile uint16_t* terminal_buffer = (volatile uint16_t*)VGA_MEMORY;
+
+constexpr uint16_t VGA_INDEX_PORT = 0x3D4;
+constexpr uint16_t VGA_DATA_PORT = 0x3D5;
+
+static void set_cursor_position(uint16_t position) {
+    uint8_t low_byte = static_cast<uint8_t>(position & 0xFF);
+    uint8_t high_byte = static_cast<uint8_t>((position >> 8) & 0xFF);
+
+    outb(VGA_INDEX_PORT, 0x0F);
+    outb(VGA_DATA_PORT, low_byte);
+
+    outb(VGA_INDEX_PORT, 0x0E);
+    outb(VGA_DATA_PORT, high_byte);
+}
 
 static void terminal_scroll() {
     for (size_t y = 1; y < VGA_HEIGHT; y++)
@@ -45,6 +60,7 @@ void terminal_initialize() {
             terminal_buffer[index] = vga_entry(' ', terminal_color);
         }
     }
+    set_cursor_position(0);
 }
 
 void terminal_setcolor(uint8_t color) {
@@ -56,7 +72,7 @@ static void terminal_putentryat(char c, uint8_t color, size_t x, size_t y) {
     terminal_buffer[index] = vga_entry(c, color);
 }
 
-void terminal_putchar(char c) {
+static void terminal_putchar_raw(char c) {
     switch (c) {
         case '\n':
             terminal_newline();
@@ -80,6 +96,11 @@ void terminal_putchar(char c) {
     terminal_putentryat(c, terminal_color, terminal_column, terminal_row);
     if (++terminal_column == VGA_WIDTH)
         terminal_newline();
+}
+
+void terminal_putchar(char c) {
+    terminal_putchar_raw(c);
+    set_cursor_position(terminal_row * VGA_WIDTH + terminal_column);
 }
 
 void terminal_write(const char* data, size_t size) {
