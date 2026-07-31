@@ -2,7 +2,7 @@
 
 CXX      := i686-elf-g++
 LD       := i686-elf-ld
-CXXFLAGS := -ffreestanding -fno-exceptions -fno-rtti -Wall -Wextra -Iinclude
+CXXFLAGS := -ffreestanding -fno-exceptions -fno-rtti -O2 -Wall -Wextra -Iinclude
 
 SRCS := $(shell find kernel -name '*.cpp')
 OBJS := $(SRCS:.cpp=.o)
