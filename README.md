@@ -41,8 +41,8 @@ removes all build artifacts.
 
 ## Next
 
-- [ ] Hardware cursor via ports `0x3D4` and `0x3D5`
-- [ ] Zero `.bss` in the entry stub instead of relying on a zeroed disk image
+- [x] Hardware cursor via ports `0x3D4` and `0x3D5`
+- [x] Zero `.bss` in the entry stub instead of relying on a zeroed disk image
 - [ ] Set up the IDT
 - [ ] Remap the PIC so IRQs stop colliding with CPU exception vectors
 - [ ] PS/2 keyboard driver
