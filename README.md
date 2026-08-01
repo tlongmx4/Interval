@@ -35,7 +35,7 @@ removes all build artifacts.
 | Path | Purpose                                                 |
 |---|---------------------------------------------------------|
 | `boot/` | Stage 1 and stage 2 -- real mode through protected mode |
-| `kernel/` | Entry stub and C++ sources, drivers                     |
+| `kernel/` | Entry stub and C++ sources, drivers, interrupts         |
 | `include/` | Headers                                                 |
 | `linker.ld` | Memory layout -- kernel placed at `0x10000`             |
 
@@ -43,7 +43,7 @@ removes all build artifacts.
 
 - [x] Hardware cursor via ports `0x3D4` and `0x3D5`
 - [x] Zero `.bss` in the entry stub instead of relying on a zeroed disk image
-- [ ] Set up the IDT
+- [x] Set up the IDT
 - [ ] Remap the PIC so IRQs stop colliding with CPU exception vectors
 - [ ] PS/2 keyboard driver
 - [ ] Memory allocator, then `operator new` and `operator delete`
